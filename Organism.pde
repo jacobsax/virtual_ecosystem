@@ -1,38 +1,46 @@
 class Organism{
+  
   PVector location, velocity, acceleration;
   int fieldOfView = 0;
   float time = 0;
   float topSpeed = 5;
-  float lifeLength = 15;
+  int size = 10;
   
-  boolean dead = false;
-  
-  Organism(int x, int y){
-    location = new PVector(x, y);
-    velocity = new PVector(0, 0);
-    acceleration = new PVector(0, 0);
+  Organism(){
+    location = new PVector (random(width), random(height));
+    velocity = new PVector (random(-2, 2), random(-2, 2));
+    acceleration = new PVector (0, 0);
+    size = int(random(8, 40));
+    topSpeed = 80 / size;
   }
   
-  void update(){
-    time = time + (0.01 * lifeLength);
+  void update(){ //updates the fly's position, and calculates its acceleration
+    time = time + (0.1 * topSpeed); //update the amount of time that has passed, if the fly is faster increase how far along the curve we go
     
-    if (time >= lifeLength){
-      dead = true;
-      acceleration.x = 0;
-      acceleration.y = 0;
-      velocity.x = 0;
-      velocity.y = 0;
-    }
+    PVector dir = new PVector (map(noise(time), 0, 1, -2, 2), map(noise(time + 1), 0, 1, -2, 2)); //find acceleration based on two perlin noise curves 
+    dir.normalize();
+    dir.mult(0.1); //normalize the acceleration and multiply it by 0.1
     
+    acceleration = dir;
     velocity.add(acceleration);
-    velocity.limit(topSpeed);
+    velocity.limit(topSpeed); //limit the fly to its top speed
     
     location.add(velocity);
   }
   
-  void changeAcceleration(float x, float y){
-    PVector dir = new PVector(x, y);
-    dir.normalize();
-    acceleration = dir;
+  void checkEdges(){ //if we hit an edge, bounce back off of it
+    if ((location.x > width) || (location.x < 0)){
+      velocity.x = velocity.x * -1;
+    }
+    if ((location.y > height) || (location.y < 0)){
+      velocity.y = velocity.y * -1;
+    }
   }
+  
+  void display(){ //displays the organism
+    stroke(0);
+    fill(175);
+    ellipse(location.x, location.y, size, size);
+  }
+  
 }

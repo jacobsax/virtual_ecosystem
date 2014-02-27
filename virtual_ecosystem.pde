@@ -1,16 +1,24 @@
-Fly flyOne;
+byte animals_size = 20;
+
+Organism [] animals = new Organism[animals_size];
 
 void setup(){
-  size(960, 640);
-  flyOne = new Fly();
+  size(640, 360);
   
-  flyOne.fieldOfView = 0;
-  flyOne.topSpeed = 3;
+  for (byte i = 0; i < animals_size; i++){
+    animals[i] = new Organism();
+  }
+  
+  
 }
 
 void draw(){
   background(255);
-  flyOne.checkEdges();
-  flyOne.update();
-  flyOne.display();
+  
+  for (byte i = 0; i < animals_size; i++){
+    animals[i].checkEdges();
+    animals[i].update();
+    animals[i].display();
+  }
+  
 }
